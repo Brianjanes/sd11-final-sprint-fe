@@ -1,3 +1,5 @@
+@import "./variables.css";
+
 /* 1. Use a more-intuitive box-sizing model */
 *,
 *::before,
@@ -82,71 +84,25 @@ h6 {
   flex-direction: column;
 }
 
-/* Header Styles */
-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background-color: #1f2937;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 4rem;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-}
-
-header h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #e5e7eb;
-}
-
-header nav a {
-  color: #e5e7eb;
-  text-decoration: none;
-}
-
 /* Main Content Area */
 main {
   flex: 1;
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  padding-top: 0; /* Remove padding since our header is part of layout */
+}
+
+@media (min-width: 768px) {
+  main {
+    padding-top: 0; /* Remove padding since our header is part of layout */
+  }
 }
 
 /* Container for page content */
 .container {
   width: 100%;
-  max-width: 1280px;
+  max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 1rem;
-}
-
-/* Footer Styles */
-footer {
-  margin-top: auto;
-  background-color: #1f2937;
-  color: white;
-  padding: 2rem;
-  text-align: center;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  header {
-    padding: 1rem;
-  }
-
-  main {
-    padding: 1rem;
-  }
-
-  .container {
-    padding: 0 0.5rem;
-  }
 }
 
 /* Utility classes */
@@ -178,4 +134,44 @@ footer {
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+/* Image placeholders styling */
+img {
+  min-height: 20px;
+  min-width: 20px;
+}
+
+img:not([src]), 
+img[src=""],
+img[src="undefined"],
+img[src="null"],
+img[src="https://via.placeholder.com"]
+{
+  background-color: #444444;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+img:not([src])::after, 
+img[src=""]::after,
+img[src="undefined"]::after,
+img[src="null"]::after,
+img[src="https://via.placeholder.com"]::after
+{
+  content: "🎬";
+  font-size: 1.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
