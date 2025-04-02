@@ -23,7 +23,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::442042507093:role/sd11-final-sprint-fe
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/sd11-final-sprint-fe
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Upload to S3
         if: ${{ github.event_name == 'push' }}
