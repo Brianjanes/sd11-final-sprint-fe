@@ -23,14 +23,12 @@ jobs:
       - name: Build frontend
         run: |
           cd client
-          npm run build
+          CI=false npm run build
       
       - name: Debug directories
         run: |
           echo "Client directory contents:"
           ls -la ${{ github.workspace }}/client
-          echo "Public directory contents:"
-          ls -la ${{ github.workspace }}/client/public || echo "Public directory not found"
           echo "Build directory contents:"
           ls -la ${{ github.workspace }}/client/build || echo "Build directory not found"
       
@@ -45,10 +43,4 @@ jobs:
       
       - name: Upload to S3
         run: |
-          if [ -d "${{ github.workspace }}/client/build" ]; then
-            echo "Uploading from build directory"
-            aws s3 sync ${{ github.workspace }}/client/build s3://${{ secrets.AWS_S3_BUCKET_NAME }} --delete
-          else
-            echo "Build directory not found, uploading from public directory"
-            aws s3 sync ${{ github.workspace }}/client/public s3://${{ secrets.AWS_S3_BUCKET_NAME }} --delete
-          fi
+          aws s3 sync ${{ github.workspace }}/client/build s3://${{ secrets.AWS_S3_BUCKET_NAME }} --delete
