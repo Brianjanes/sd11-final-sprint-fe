@@ -1,11 +1,11 @@
-// src/components/MovieCarousel.jsx
 "use client";
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Clock, Star } from "lucide-react";
 import { Button } from "../ui/Button/Button";
 import "./MovieCarousel.css";
+import { Link } from "react-router-dom";
 
+// Only include movies that exist in your DB (id 1 is Dune: Part Two)
 const featuredMovies = [
   {
     id: 1,
@@ -31,6 +31,9 @@ const featuredMovies = [
   },
 ];
 
+// Fake available movie IDs from backend
+const moviesWithShowtimes = [1]; // Add more IDs if needed
+
 export function MovieCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -39,16 +42,11 @@ export function MovieCarousel() {
   };
 
   const prevSlide = () => {
-    setCurrentSlide(
-      (prev) => (prev - 1 + featuredMovies.length) % featuredMovies.length
-    );
+    setCurrentSlide((prev) => (prev - 1 + featuredMovies.length) % featuredMovies.length);
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 6000);
-
+    const interval = setInterval(nextSlide, 6000);
     return () => clearInterval(interval);
   }, []);
 
@@ -57,9 +55,7 @@ export function MovieCarousel() {
       {featuredMovies.map((movie, index) => (
         <div
           key={movie.id}
-          className={`carousel-slide ${
-            index === currentSlide ? "slide-active" : "slide-inactive"
-          }`}
+          className={`carousel-slide ${index === currentSlide ? "slide-active" : "slide-inactive"}`}
         >
           <div className="carousel-gradient" />
           <img
@@ -90,7 +86,15 @@ export function MovieCarousel() {
               </div>
               <p className="movie-description">{movie.description}</p>
               <div className="carousel-actions">
-                <Button size="lg">Get Tickets</Button>
+                {moviesWithShowtimes.includes(movie.id) ? (
+                  <Link to={`/movies/${movie.id}`}>
+                    <Button size="lg">Get Tickets</Button>
+                  </Link>
+                ) : (
+                  <Button size="lg" disabled>
+                    Not Available
+                  </Button>
+                )}
                 <Button size="lg" variant="outline">
                   Watch Trailer
                 </Button>
@@ -99,33 +103,19 @@ export function MovieCarousel() {
           </div>
         </div>
       ))}
-      <Button
-        variant="ghost"
-        className="carousel-prev-button"
-        onClick={prevSlide}
-      >
+      <Button variant="ghost" className="carousel-prev-button" onClick={prevSlide}>
         <ChevronLeft className="carousel-arrow" />
-        <span className="visually-hidden">Previous slide</span>
       </Button>
-      <Button
-        variant="ghost"
-        className="carousel-next-button"
-        onClick={nextSlide}
-      >
+      <Button variant="ghost" className="carousel-next-button" onClick={nextSlide}>
         <ChevronRight className="carousel-arrow" />
-        <span className="visually-hidden">Next slide</span>
       </Button>
       <div className="carousel-indicators">
         {featuredMovies.map((_, index) => (
           <button
             key={index}
-            className={`carousel-indicator ${
-              index === currentSlide ? "indicator-active" : ""
-            }`}
+            className={`carousel-indicator ${index === currentSlide ? "indicator-active" : ""}`}
             onClick={() => setCurrentSlide(index)}
-          >
-            <span className="visually-hidden">Go to slide {index + 1}</span>
-          </button>
+          />
         ))}
       </div>
     </div>

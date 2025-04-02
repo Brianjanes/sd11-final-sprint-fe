@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "../ui/Button/Button";
 import { Card, CardContent } from "../ui/Card/Card";
+import { Link } from "react-router-dom";
 import "./MovieShowtimes.css";
 
 // Default theaters data
@@ -26,7 +27,7 @@ const theaters = [
   },
 ];
 
-// Default movies data
+// Default movies data with added showtime IDs
 const movies = [
   {
     id: 1,
@@ -34,11 +35,11 @@ const movies = [
     image: "https://via.placeholder.com/80x120",
     rating: "PG-13",
     showtimes: [
-      { time: "10:30 AM", format: "Standard" },
-      { time: "1:15 PM", format: "IMAX" },
-      { time: "4:00 PM", format: "Standard" },
-      { time: "7:30 PM", format: "IMAX" },
-      { time: "10:45 PM", format: "Standard" },
+      { id: 101, time: "10:30 AM", format: "Standard" },
+      { id: 102, time: "1:15 PM", format: "IMAX" },
+      { id: 103, time: "4:00 PM", format: "Standard" },
+      { id: 104, time: "7:30 PM", format: "IMAX" },
+      { id: 105, time: "10:45 PM", format: "Standard" },
     ],
   },
   {
@@ -47,11 +48,11 @@ const movies = [
     image: "https://via.placeholder.com/80x120",
     rating: "PG-13",
     showtimes: [
-      { time: "11:00 AM", format: "Standard" },
-      { time: "2:30 PM", format: "3D" },
-      { time: "5:45 PM", format: "Standard" },
-      { time: "8:15 PM", format: "3D" },
-      { time: "11:00 PM", format: "Standard" },
+      { id: 201, time: "11:00 AM", format: "Standard" },
+      { id: 202, time: "2:30 PM", format: "3D" },
+      { id: 203, time: "5:45 PM", format: "Standard" },
+      { id: 204, time: "8:15 PM", format: "3D" },
+      { id: 205, time: "11:00 PM", format: "Standard" },
     ],
   },
   {
@@ -60,11 +61,11 @@ const movies = [
     image: "https://via.placeholder.com/80x120",
     rating: "PG-13",
     showtimes: [
-      { time: "10:15 AM", format: "Standard" },
-      { time: "12:45 PM", format: "Standard" },
-      { time: "3:30 PM", format: "Standard" },
-      { time: "6:15 PM", format: "Standard" },
-      { time: "9:00 PM", format: "Standard" },
+      { id: 301, time: "10:15 AM", format: "Standard" },
+      { id: 302, time: "12:45 PM", format: "Standard" },
+      { id: 303, time: "3:30 PM", format: "Standard" },
+      { id: 304, time: "6:15 PM", format: "Standard" },
+      { id: 305, time: "9:00 PM", format: "Standard" },
     ],
   },
 ];
@@ -170,21 +171,22 @@ export function MovieShowtimes() {
                         </div>
                       </div>
                       <div className="showtimes-list">
-                        {movie.showtimes.map((showtime, index) => (
-                          <Button
-                            key={index}
-                            variant="outline"
-                            className="showtime-button"
+                        {movie.showtimes.map((showtime) => (
+                          <Link
+                            key={showtime.id}
+                            to={`/showtimes/${showtime.id}/seats`}
                           >
-                            <div>
-                              <div className="showtime-time">
-                                {showtime.time}
+                            <Button variant="outline" className="showtime-button">
+                              <div>
+                                <div className="showtime-time">
+                                  {showtime.time}
+                                </div>
+                                <div className="showtime-format">
+                                  {showtime.format}
+                                </div>
                               </div>
-                              <div className="showtime-format">
-                                {showtime.format}
-                              </div>
-                            </div>
-                          </Button>
+                            </Button>
+                          </Link>
                         ))}
                       </div>
                     </div>

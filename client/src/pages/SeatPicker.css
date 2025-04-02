@@ -1,0 +1,42 @@
+/* src/pages/SeatPicker.css */
+.seat-picker-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.seats-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.seat {
+  padding: 0.75rem;
+  border-radius: 6px;
+  background-color: #eee;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.seat:hover {
+  background-color: #ccc;
+}
+
+.seat.selected {
+  background-color: #4ade80;
+  color: white;
+}
+
+.seat:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.selected-summary {
+  margin-top: 2rem;
+}

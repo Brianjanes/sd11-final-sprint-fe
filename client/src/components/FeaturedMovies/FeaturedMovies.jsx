@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Clock, Star } from "lucide-react";
 import { Button } from "../ui/Button/Button";
 import "./FeaturedMovies.css";
 
-// Default movies data
 const nowPlayingMovies = [
   {
     id: 1,
@@ -96,6 +94,9 @@ const comingSoonMovies = [
   },
 ];
 
+// You can update this based on your DB
+const moviesWithShowtimes = [1, 2, 3, 4];
+
 export function FeaturedMovies({ type = "now-playing" }) {
   const movies = type === "now-playing" ? nowPlayingMovies : comingSoonMovies;
 
@@ -126,9 +127,19 @@ export function FeaturedMovies({ type = "now-playing" }) {
             {type === "coming-soon" && movie.releaseDate && (
               <p className="movie-release-date">Coming {movie.releaseDate}</p>
             )}
-            <Button className="movie-button">
-              {type === "now-playing" ? "Get Tickets" : "Pre-Order"}
-            </Button>
+            {type === "now-playing" ? (
+              moviesWithShowtimes.includes(movie.id) ? (
+                <Link to={`/movies/${movie.id}`}>
+                  <Button className="movie-button">Get Tickets</Button>
+                </Link>
+              ) : (
+                <Button className="movie-button" disabled>
+                  Not Available
+                </Button>
+              )
+            ) : (
+              <Button className="movie-button">Pre-Order</Button>
+            )}
           </div>
         </div>
       ))}
