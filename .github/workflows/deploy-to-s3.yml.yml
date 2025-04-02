@@ -1,0 +1,44 @@
+name: Deploy to AWS S3
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js (if your frontend requires it)
+        if: ${{ github.event_name == 'push' }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (if your frontend requires it)
+        if: ${{ github.event_name == 'push' }}
+        run: npm install
+
+      - name: Build frontend (if applicable)
+        if: ${{ github.event_name == 'push' }}
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::442042507093:role/sd11-final-sprint-fe
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3
+        if: ${{ github.event_name == 'push' }}
+        uses: aws-actions/s3-sync@v3
+        with:
+          args: --acl public-read
+          bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          bucket-region: ${{ secrets.AWS_REGION }}
+          delete: true
+          local-dir: ${{ github.workspace }}/public
