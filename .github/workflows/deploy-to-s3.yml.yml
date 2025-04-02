@@ -16,15 +16,23 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd client
+          npm install
       
       - name: Build frontend
-        run: npm run build
+        run: |
+          cd client
+          npm run build
       
       - name: Debug directories
         run: |
-          ls -la ${{ github.workspace }}
-          ls -la ${{ github.workspace }}/build || echo "Build directory not found"
+          echo "Client directory contents:"
+          ls -la ${{ github.workspace }}/client
+          echo "Public directory contents:"
+          ls -la ${{ github.workspace }}/client/public || echo "Public directory not found"
+          echo "Build directory contents:"
+          ls -la ${{ github.workspace }}/client/build || echo "Build directory not found"
       
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -37,4 +45,10 @@ jobs:
       
       - name: Upload to S3
         run: |
-          aws s3 sync ${{ github.workspace }}/build s3://${{ secrets.AWS_S3_BUCKET_NAME }} --delete
+          if [ -d "${{ github.workspace }}/client/build" ]; then
+            echo "Uploading from build directory"
+            aws s3 sync ${{ github.workspace }}/client/build s3://${{ secrets.AWS_S3_BUCKET_NAME }} --delete
+          else
+            echo "Build directory not found, uploading from public directory"
+            aws s3 sync ${{ github.workspace }}/client/public s3://${{ secrets.AWS_S3_BUCKET_NAME }} --delete
+          fi
