@@ -1,13 +1,14 @@
-// src/App.js
 import "./styles/App.css";
 import Header from "./components/ui/Header/Header";
 import Footer from "./components/ui/Footer/Footer";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/HomePage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import SeatPicker from "./pages/SeatPicker";
+import BookingPage from "./pages/BookingPage";
+import TicketPage from "./pages/TicketPage";
 import Admin from "./pages/Admin/Admin";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -29,7 +30,12 @@ function App() {
                   path="/showtimes/:showtimeId/seats"
                   element={<SeatPicker />}
                 />
-                {/* Admin routes */}
+
+                {/* NEW ROUTES */}
+                <Route path="/booking" element={<BookingPage />} />
+                <Route path="/ticket" element={<TicketPage />} />
+
+                {/* Admin (protected) */}
                 <Route
                   path="/admin"
                   element={

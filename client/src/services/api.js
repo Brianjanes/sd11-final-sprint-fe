@@ -1,4 +1,5 @@
 // src/services/api.js
+
 import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8080/api";
@@ -37,12 +38,14 @@ export const theaterService = {
 export const showtimeService = {
   getShowtimesByMovie: (movieId) => api.get(`/movies/${movieId}/showtimes`),
   getShowtimesByTheater: (theaterId) => api.get(`/theaters/${theaterId}/showtimes`),
-  // Optional: if used elsewhere
   getAvailableSeats: (showtimeId) => api.get(`/showtimes/${showtimeId}/seats`),
+
+  // NEW line: fetch a single showtime, returning movieTitle & theaterName, etc.
+  getShowtimeById: (showtimeId) => api.get(`/showtimes/${showtimeId}`),
 };
 
 export const seatService = {
-  // Updated endpoint: this calls /api/seats/showtime/{showtimeId}/available
+  // GET /api/seats/showtime/{showtimeId}/available
   getSeatsByShowtime: (showtimeId) => api.get(`/seats/showtime/${showtimeId}/available`),
 };
 
