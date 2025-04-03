@@ -4,33 +4,16 @@ import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Clock, Star } from "lucide-react";
 import { Button } from "../ui/Button/Button";
 import { Link } from "react-router-dom";
-import { movieService } from "../../services/api";
+import { useFetchMovies } from "../../hooks/useFetchMovies";
 import "./MovieCarousel.css";
+import LoadingSpinner from "../ui/LoadingSpinner/LoadingSpinner";
 
 export function MovieCarousel() {
-  const [slides, setSlides] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const { movies: allMovies, loading, error } = useFetchMovies("now-playing");
+  const slides = allMovies.slice(0, 2); // Only show first 2 movies
 
-  // 1) fetch now-playing, then pick 2 for "featured"
-  useEffect(() => {
-    movieService
-      .getAllMovies()
-      .then((res) => {
-        const all = res.data;
-        const today = new Date();
-        const nowPlaying = all.filter(
-          (m) => new Date(m.releaseDate) <= today
-        );
-        // pick first 2 as "featured" 
-        const featured = nowPlaying.slice(0, 2);
-        setSlides(featured);
-      })
-      .catch((err) => console.error("Failed to fetch featured movies:", err))
-      .finally(() => setLoading(false));
-  }, []);
-
-  // 2) auto-cycle the slides
+  // Auto-cycle the slides
   useEffect(() => {
     if (!slides.length) return;
     const interval = setInterval(() => {
@@ -47,7 +30,13 @@ export function MovieCarousel() {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  if (loading) return <div>Loading featured movies...</div>;
+  if (loading)
+    return (
+      <div className="loading-spinner-container loading-spinner-container--section">
+        <LoadingSpinner />
+      </div>
+    );
+  if (error) return <div>Failed to load featured movies.</div>;
   if (!slides.length) return <div>No featured movies found.</div>;
 
   return (
@@ -62,7 +51,9 @@ export function MovieCarousel() {
         return (
           <div
             key={movie.id}
-            className={`carousel-slide ${isActive ? "slide-active" : "slide-inactive"}`}
+            className={`carousel-slide ${
+              isActive ? "slide-active" : "slide-inactive"
+            }`}
           >
             <div className="carousel-gradient" />
             <img
@@ -72,7 +63,6 @@ export function MovieCarousel() {
             />
             <div className="carousel-content">
               <div className="carousel-info">
-                {/* If genre is comma-separated */}
                 <div className="genre-tags">
                   {movie.genre?.split(",").map((g) => (
                     <span key={g} className="genre-tag">
@@ -89,7 +79,7 @@ export function MovieCarousel() {
                   </div>
                   <div className="movie-stars-container">
                     <Star className="star-icon-large" />
-                    <span>4.8/5</span> {/* or remove */}
+                    <span>4.8/5</span>
                   </div>
                 </div>
                 <p className="movie-description">{movie.description}</p>
@@ -109,10 +99,18 @@ export function MovieCarousel() {
         );
       })}
 
-      <Button variant="ghost" className="carousel-prev-button" onClick={prevSlide}>
+      <Button
+        variant="ghost"
+        className="carousel-prev-button"
+        onClick={prevSlide}
+      >
         <ChevronLeft className="carousel-arrow" />
       </Button>
-      <Button variant="ghost" className="carousel-next-button" onClick={nextSlide}>
+      <Button
+        variant="ghost"
+        className="carousel-next-button"
+        onClick={nextSlide}
+      >
         <ChevronRight className="carousel-arrow" />
       </Button>
 
@@ -120,7 +118,9 @@ export function MovieCarousel() {
         {slides.map((_, i) => (
           <button
             key={i}
-            className={`carousel-indicator ${i === currentSlide ? "indicator-active" : ""}`}
+            className={`carousel-indicator ${
+              i === currentSlide ? "indicator-active" : ""
+            }`}
             onClick={() => setCurrentSlide(i)}
           />
         ))}

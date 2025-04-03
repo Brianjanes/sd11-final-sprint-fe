@@ -1,60 +1,21 @@
 // FILE: src/components/FeaturedMovies/FeaturedMovies.jsx
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Clock, Star } from "lucide-react";
 import { Button } from "../ui/Button/Button";
-import { movieService } from "../../services/api";
+import { useFetchMovies } from "../../hooks/useFetchMovies";
 import "./FeaturedMovies.css";
+import LoadingSpinner from "../ui/LoadingSpinner/LoadingSpinner";
 
 export function FeaturedMovies({ type = "now-playing" }) {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { movies, loading, error } = useFetchMovies(type);
 
-  useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-
-    if (type === "coming-soon") {
-      // GET /api/movies/upcoming
-      movieService
-        .getUpcomingMovies()
-        .then((res) => {
-          if (isMounted) setMovies(res.data);
-        })
-        .catch((err) => {
-          console.error(err);
-          setError("Failed to load upcoming movies");
-        })
-        .finally(() => setLoading(false));
-    } else {
-      // "now-playing": fetch all, then filter by releaseDate <= today
-      movieService
-        .getAllMovies()
-        .then((res) => {
-          const allMovies = res.data;
-          const today = new Date();
-          const nowPlaying = allMovies.filter((m) => {
-            // if movie has a releaseDate in ISO format: "2023-12-10"
-            // compare to current date
-            const movieDate = new Date(m.releaseDate);
-            return movieDate <= today;
-          });
-          if (isMounted) setMovies(nowPlaying);
-        })
-        .catch((err) => {
-          console.error(err);
-          setError("Failed to load now-playing movies");
-        })
-        .finally(() => setLoading(false));
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [type]);
-
-  if (loading) return <div>Loading {type} movies...</div>;
+  if (loading)
+    return (
+      <div className="loading-spinner-container loading-spinner-container--section">
+        <LoadingSpinner />
+      </div>
+    );
   if (error) return <div style={{ color: "red" }}>{error}</div>;
   if (!movies.length) return <div>No movies found.</div>;
 
@@ -86,7 +47,7 @@ export function FeaturedMovies({ type = "now-playing" }) {
                 </div>
                 <div className="movie-rating-stars">
                   <Star className="star-icon" />
-                  <span>4.5</span> {/* Hardcoded or remove */}
+                  <span>4.5</span>
                 </div>
               </div>
 
@@ -96,7 +57,6 @@ export function FeaturedMovies({ type = "now-playing" }) {
                 </p>
               )}
 
-              {/* "Get Tickets" -> MovieDetailPage -> seat picking */}
               <Link to={`/movies/${movie.id}`}>
                 <Button className="movie-button">Get Tickets</Button>
               </Link>

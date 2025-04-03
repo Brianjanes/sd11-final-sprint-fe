@@ -1,11 +1,11 @@
 // FILE: src/pages/HomePage.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "../components/ui/Button/Button";
-import { MovieCarousel } from "../components/MovieCarousel/MovieCarousel";
-import { FeaturedMovies } from "../components/FeaturedMovies/FeaturedMovies";
-import { MovieShowtimes } from "../components/MovieShowtimes/MovieShowtimes";
-import { PromoSection } from "../components/PromoSection/PromoSection";
+import { Button } from "../../components/ui/Button/Button";
+import { MovieCarousel } from "../../components/MovieCarousel/MovieCarousel";
+import { FeaturedMovies } from "../../components/FeaturedMovies/FeaturedMovies";
+import { MovieShowtimes } from "../../components/MovieShowtimes/MovieShowtimes";
+import { PromoSection } from "../../components/PromoSection/PromoSection";
 import "./HomePage.css";
 
 function HomePage() {

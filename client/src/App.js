@@ -4,16 +4,16 @@ import "./styles/App.css";
 import Header from "./components/ui/Header/Header";
 import Footer from "./components/ui/Footer/Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/HomePage";
+import Home from "./pages/HomePage/HomePage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import MovieDetailPage from "./pages/MovieDetailPage";
-import SeatPicker from "./pages/SeatPicker";
-import BookingPage from "./pages/BookingPage";
-import TicketPage from "./pages/TicketPage";
+import MovieDetailPage from "./pages/MovieDetailPage/MovieDetailPage";
+import SeatPicker from "./pages/SeatPicker/SeatPicker";
+import BookingPage from "./pages/BookingPage/BookingPage";
+import TicketPage from "./pages/TicketPage/TicketPage";
 import Admin from "./pages/Admin/Admin";
 // New pages:
-import Movies from "./pages/Movies";
+import Movies from "./pages/Movies/Movies";
 import Theatres from "./pages/Theatres";
 import Events from "./pages/Events";
 import VIP from "./pages/VIP";
@@ -35,7 +35,10 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/movies/:id" element={<MovieDetailPage />} />
-                <Route path="/showtimes/:showtimeId/seats" element={<SeatPicker />} />
+                <Route
+                  path="/showtimes/:showtimeId/seats"
+                  element={<SeatPicker />}
+                />
                 {/* New Routes */}
                 <Route path="/movies" element={<Movies />} />
                 <Route path="/theatres" element={<Theatres />} />

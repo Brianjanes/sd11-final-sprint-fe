@@ -175,3 +175,21 @@ img[src="https://via.placeholder.com"]::after
   flex-direction: column;
   flex: 1;
 }
+
+/* Loading States */
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: inherit;
+  padding: 2rem;
+}
+
+.loading-spinner-container--fullpage {
+  min-height: calc(100vh - var(--header-height, 64px));
+}
+
+.loading-spinner-container--section {
+  min-height: 300px;
+}

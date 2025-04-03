@@ -1,0 +1,86 @@
+.movie-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.movie-detail-header {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.movie-poster {
+  width: 300px;
+  height: 450px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.movie-info {
+  flex: 1;
+}
+
+.movie-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.movie-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.movie-description {
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.movie-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.showtimes-section {
+  margin-top: 3rem;
+}
+
+.showtimes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.showtime-card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.showtime-time {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.showtime-theater {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.showtime-price {
+  color: #2ecc71;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  padding: 2rem;
+  text-align: center;
+  color: red;
+}
