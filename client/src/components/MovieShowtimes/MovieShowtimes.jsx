@@ -1,94 +1,107 @@
-import { useState } from "react";
+// FILE: src/components/MovieShowtimes/MovieShowtimes.jsx
+
+import React, { useState, useEffect } from "react";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "../ui/Button/Button";
 import { Card, CardContent } from "../ui/Card/Card";
 import { Link } from "react-router-dom";
+import {
+  theaterService,
+  movieService,
+  showtimeService,
+} from "../../services/api";
 import "./MovieShowtimes.css";
 
-// Default theaters data
-const theaters = [
-  {
-    id: 1,
-    name: "Cineplex Avalon Mall",
-    address: "48 Kenmount Rd, St. John's, NL",
-    distance: "5 min away",
-  },
-  {
-    id: 2,
-    name: "Cineplex Village Mall",
-    address: "430 Topsail Rd, St. John's, NL",
-    distance: "15 min away",
-  },
-  {
-    id: 3,
-    name: "Cineplex Sobeys Square",
-    address: "70 Kelsey Dr, St. John's, NL",
-    distance: "20 min away",
-  },
-];
-
-// Default movies data with added showtime IDs
-const movies = [
-  {
-    id: 1,
-    title: "Dune: Part Two",
-    image: "https://via.placeholder.com/80x120",
-    rating: "PG-13",
-    showtimes: [
-      { id: 101, time: "10:30 AM", format: "Standard" },
-      { id: 102, time: "1:15 PM", format: "IMAX" },
-      { id: 103, time: "4:00 PM", format: "Standard" },
-      { id: 104, time: "7:30 PM", format: "IMAX" },
-      { id: 105, time: "10:45 PM", format: "Standard" },
-    ],
-  },
-  {
-    id: 2,
-    title: "Godzilla x Kong: The New Empire",
-    image: "https://via.placeholder.com/80x120",
-    rating: "PG-13",
-    showtimes: [
-      { id: 201, time: "11:00 AM", format: "Standard" },
-      { id: 202, time: "2:30 PM", format: "3D" },
-      { id: 203, time: "5:45 PM", format: "Standard" },
-      { id: 204, time: "8:15 PM", format: "3D" },
-      { id: 205, time: "11:00 PM", format: "Standard" },
-    ],
-  },
-  {
-    id: 3,
-    title: "The Fall Guy",
-    image: "https://via.placeholder.com/80x120",
-    rating: "PG-13",
-    showtimes: [
-      { id: 301, time: "10:15 AM", format: "Standard" },
-      { id: 302, time: "12:45 PM", format: "Standard" },
-      { id: 303, time: "3:30 PM", format: "Standard" },
-      { id: 304, time: "6:15 PM", format: "Standard" },
-      { id: 305, time: "9:00 PM", format: "Standard" },
-    ],
-  },
-];
-
 export function MovieShowtimes() {
-  const [date, setDate] = useState(new Date());
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [activeTheater, setActiveTheater] = useState(theaters[0].id);
+  // State for backend data
+  const [theaters, setTheaters] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [showtimes, setShowtimes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Generate an array of dates for the next 14 days
+  // Date picker state – set default to "2025-04-10" to match your inserted data
+  const [selectedDate, setSelectedDate] = useState(new Date("2025-04-10"));
+  const [showCalendar, setShowCalendar] = useState(false);
   const calendarDates = Array.from({ length: 14 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() + i);
     return d;
   });
 
-  const handleDateSelect = (newDate) => {
-    setDate(newDate);
+  // Theater tab state
+  const [activeTheater, setActiveTheater] = useState(null);
+
+  // Fetch theaters and movies on mount
+  useEffect(() => {
+    async function fetchInitialData() {
+      try {
+        setLoading(true);
+        const tRes = await theaterService.getAllTheaters(); // GET /api/theaters
+        setTheaters(tRes.data);
+        if (tRes.data.length > 0) {
+          setActiveTheater(tRes.data[0].id);
+        }
+        const mRes = await movieService.getAllMovies(); // GET /api/movies
+        setMovies(mRes.data);
+      } catch (err) {
+        console.error("Error fetching theaters or movies:", err);
+        setError("Failed to load theaters or movies.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchInitialData();
+  }, []);
+
+  // Fetch showtimes whenever the selected date changes
+  useEffect(() => {
+    async function fetchShowtimes() {
+      try {
+        setLoading(true);
+        const dateString = selectedDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
+        const sRes = await showtimeService.getShowTimesByDate(dateString); // GET /api/showtimes/date/{date}
+        setShowtimes(sRes.data);
+      } catch (err) {
+        console.error("Error fetching showtimes:", err);
+        setError("Failed to load showtimes.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchShowtimes();
+  }, [selectedDate]);
+
+  // Handler for changing the selected date
+  const handleDateSelect = (d) => {
+    setSelectedDate(d);
     setShowCalendar(false);
   };
 
+  // Helper: Filter showtimes for a given movie and theater.
+  // Here, we assume each showtime object has:
+  //    - st.movieId (number)
+  //    - st.theaterName (string) – set in your DTO from st.getScreen().getTheater().getName()
+  // Adjust this if your field names differ.
+  const getShowtimesForMovieAndTheater = (movieId, theaterName) => {
+    return showtimes.filter(
+      (st) => st.movieId === movieId && st.theaterName === theaterName
+    );
+  };
+
+  // Helper: Format ISO datetime to "10:30 AM"
+  const formatTime = (isoString) => {
+    if (!isoString) return "";
+    const d = new Date(isoString);
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  if (loading) return <div className="text-center p-4">Loading...</div>;
+  if (error) return <div className="text-center p-4" style={{ color: "red" }}>{error}</div>;
+
   return (
     <div className="showtimes-container">
+      {/* Date Picker */}
       <div className="date-selector">
         <div className="calendar-wrapper">
           <Button
@@ -97,13 +110,12 @@ export function MovieShowtimes() {
             onClick={() => setShowCalendar(!showCalendar)}
           >
             <CalendarIcon className="calendar-icon" />
-            {date.toLocaleDateString("en-US", {
+            {selectedDate.toLocaleDateString("en-US", {
               weekday: "short",
               month: "short",
               day: "numeric",
             })}
           </Button>
-
           {showCalendar && (
             <div className="calendar-dropdown">
               <div className="calendar-grid">
@@ -111,7 +123,7 @@ export function MovieShowtimes() {
                   <button
                     key={i}
                     className={`calendar-day ${
-                      date.toDateString() === d.toDateString()
+                      selectedDate.toDateString() === d.toDateString()
                         ? "calendar-day-active"
                         : ""
                     }`}
@@ -126,21 +138,23 @@ export function MovieShowtimes() {
         </div>
       </div>
 
+      {/* Theater Tabs */}
       <div className="theaters-container">
         <div className="theater-tabs">
-          {theaters.map((theater) => (
+          {theaters.map((th) => (
             <button
-              key={theater.id}
+              key={th.id}
               className={`theater-tab ${
-                activeTheater === theater.id ? "theater-tab-active" : ""
+                activeTheater === th.id ? "theater-tab-active" : ""
               }`}
-              onClick={() => setActiveTheater(theater.id)}
+              onClick={() => setActiveTheater(th.id)}
             >
-              {theater.name}
+              {th.name}
             </button>
           ))}
         </div>
 
+        {/* Theater Content */}
         {theaters.map((theater) => (
           <div
             key={theater.id}
@@ -148,52 +162,58 @@ export function MovieShowtimes() {
               activeTheater === theater.id ? "theater-content-active" : ""
             }`}
           >
-            <Card className="theater-card">
-              <CardContent className="theater-card-content">
-                <div className="theater-address">
-                  {theater.address} • {theater.distance}
-                </div>
-
-                <div className="movies-list">
-                  {movies.map((movie) => (
-                    <div key={movie.id} className="movie-item">
-                      <div className="movie-info-container">
-                        <div className="movie-poster-container">
-                          <img
-                            src={movie.image || "/placeholder.svg"}
-                            alt={movie.title}
-                            className="movie-poster-small"
-                          />
+            {activeTheater === theater.id && (
+              <Card className="theater-card">
+                <CardContent className="theater-card-content">
+                  <div className="theater-address">
+                    {theater.address} • {theater.distance || "5 min away"}
+                  </div>
+                  <div className="movies-list">
+                    {movies.map((movie) => {
+                      // Here we filter by movie id and match theater by name
+                      const relevantShowtimes = getShowtimesForMovieAndTheater(
+                        movie.id,
+                        theater.name
+                      );
+                      if (!relevantShowtimes.length) return null;
+                      return (
+                        <div key={movie.id} className="movie-item">
+                          <div className="movie-info-container">
+                            <div className="movie-poster-container">
+                              <img
+                                src={movie.posterImageUrl || "/placeholder.svg"}
+                                alt={movie.title}
+                                className="movie-poster-small"
+                              />
+                            </div>
+                            <div className="movie-details-small">
+                              <h3 className="movie-title-small">{movie.title}</h3>
+                              <p className="movie-rating-small">{movie.rating}</p>
+                            </div>
+                          </div>
+                          <div className="showtimes-list">
+                            {relevantShowtimes.map((st) => (
+                              <Link key={st.id} to={`/showtimes/${st.id}/seats`}>
+                                <Button variant="outline" className="showtime-button">
+                                  <div>
+                                    <div className="showtime-time">
+                                      {formatTime(st.startTime)}
+                                    </div>
+                                    <div className="showtime-format">
+                                      {st.screenType || "Standard"}
+                                    </div>
+                                  </div>
+                                </Button>
+                              </Link>
+                            ))}
+                          </div>
                         </div>
-                        <div className="movie-details-small">
-                          <h3 className="movie-title-small">{movie.title}</h3>
-                          <p className="movie-rating-small">{movie.rating}</p>
-                        </div>
-                      </div>
-                      <div className="showtimes-list">
-                        {movie.showtimes.map((showtime) => (
-                          <Link
-                            key={showtime.id}
-                            to={`/showtimes/${showtime.id}/seats`}
-                          >
-                            <Button variant="outline" className="showtime-button">
-                              <div>
-                                <div className="showtime-time">
-                                  {showtime.time}
-                                </div>
-                                <div className="showtime-format">
-                                  {showtime.format}
-                                </div>
-                              </div>
-                            </Button>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         ))}
       </div>

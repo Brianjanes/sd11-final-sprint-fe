@@ -1,4 +1,4 @@
-// src/pages/HomePage.jsx
+// FILE: src/pages/HomePage.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/Button/Button";
@@ -15,6 +15,7 @@ function HomePage() {
     <div className="page-container">
       <main className="main-content">
         <section className="carousel-section">
+          {/* The new dynamic carousel */}
           <MovieCarousel />
         </section>
 
@@ -39,13 +40,14 @@ function HomePage() {
                   Coming Soon
                 </button>
               </div>
+              {/* If you have a separate "all movies" page, link to it */}
               <Link to="/movies" className="view-all-link">
                 View All
               </Link>
             </div>
             <div className="featured-movies">
               {activeTab === "now-playing" ? (
-                <FeaturedMovies />
+                <FeaturedMovies type="now-playing" />
               ) : (
                 <FeaturedMovies type="coming-soon" />
               )}
@@ -58,6 +60,7 @@ function HomePage() {
             <h2 className="section-title">Showtimes Near You</h2>
             <Button variant="outline">Change Location</Button>
           </div>
+          {/* The new dynamic date-filtering showtimes */}
           <MovieShowtimes />
         </section>
 
