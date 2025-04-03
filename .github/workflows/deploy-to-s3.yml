@@ -31,7 +31,13 @@ jobs:
           ls -la ${{ github.workspace }}/client
           echo "Build directory contents:"
           ls -la ${{ github.workspace }}/client/build || echo "Build directory not found"
-      
+
+      - name: Debug Secrets
+        run: |
+          echo "AWS_ACCOUNT=${{ secrets.AWS_ACCOUNT }}"
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}"
+          echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
