@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Youtube, Film } from "lucide-react";
+import AdminLink from "../../AdminLink";
 import "./Footer.css";
 
 const Footer = () => {
@@ -51,6 +52,7 @@ const Footer = () => {
               <Link to="/contact" className="footer-link">
                 Contact Us
               </Link>
+              <AdminLink />
             </nav>
           </div>
 
