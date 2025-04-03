@@ -10,7 +10,7 @@ const api = axios.create({
   },
 });
 
-// Add interceptor for JWT token
+// Add interceptor for JWT token if needed
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -36,9 +36,14 @@ export const theaterService = {
 
 export const showtimeService = {
   getShowtimesByMovie: (movieId) => api.get(`/movies/${movieId}/showtimes`),
-  getShowtimesByTheater: (theaterId) =>
-    api.get(`/theaters/${theaterId}/showtimes`),
+  getShowtimesByTheater: (theaterId) => api.get(`/theaters/${theaterId}/showtimes`),
+  // Optional: if used elsewhere
   getAvailableSeats: (showtimeId) => api.get(`/showtimes/${showtimeId}/seats`),
+};
+
+export const seatService = {
+  // Updated endpoint: this calls /api/seats/showtime/{showtimeId}/available
+  getSeatsByShowtime: (showtimeId) => api.get(`/seats/showtime/${showtimeId}/available`),
 };
 
 export const bookingService = {

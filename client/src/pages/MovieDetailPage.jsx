@@ -1,6 +1,6 @@
 // src/pages/MovieDetailPage.jsx
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   CalendarIcon,
   Clock,
@@ -23,6 +23,9 @@ function MovieDetailPage() {
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
+  
+  // Hook to navigate programmatically
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -95,9 +98,7 @@ function MovieDetailPage() {
           <div className="relative h-[300px] md:h-[400px] w-full">
             <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10" />
             <img
-              src={
-                movie.posterImageUrl || "https://via.placeholder.com/1200x600"
-              }
+              src={movie.posterImageUrl || "https://via.placeholder.com/1200x600"}
               alt={movie.title}
               className="w-full h-full object-cover"
             />
@@ -137,12 +138,10 @@ function MovieDetailPage() {
                     <Clock className="h-4 w-4" />
                     <span>{movie.durationMinutes} min</span>
                   </div>
-                  {/* Add star rating if available */}
                 </div>
                 <p className="text-muted-foreground mb-6">
                   {movie.description}
                 </p>
-                {/* Add director, cast, etc. if available */}
                 <div className="flex gap-4">
                   <Button size="lg">Get Tickets</Button>
                   {movie.trailerUrl && (
@@ -180,7 +179,6 @@ function MovieDetailPage() {
               </Button>
               {showCalendar && (
                 <div className="absolute z-10 mt-1 p-4 bg-white border rounded-md shadow-lg">
-                  {/* Simple calendar implementation */}
                   <div className="grid grid-cols-7 gap-1">
                     {Array.from({ length: 14 }).map((_, i) => {
                       const date = new Date();
@@ -236,13 +234,13 @@ function MovieDetailPage() {
                     </Button>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {theater.showtimes.map((showtime, index) => (
+                    {theater.showtimes.map((showtime) => (
                       <Button
-                        key={index}
+                        key={showtime.id}
                         variant="outline"
                         className="h-auto py-2"
                         onClick={() =>
-                          (window.location.href = `/booking/${showtime.id}`)
+                          navigate(`/showtimes/${showtime.id}/seats`)
                         }
                       >
                         <div>
