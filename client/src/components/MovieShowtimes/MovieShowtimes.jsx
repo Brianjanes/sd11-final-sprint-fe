@@ -11,6 +11,7 @@ import {
   showtimeService,
 } from "../../services/api";
 import "./MovieShowtimes.css";
+import LoadingSpinner from "../ui/LoadingSpinner/LoadingSpinner";
 
 export function MovieShowtimes() {
   // State for backend data
@@ -96,8 +97,13 @@ export function MovieShowtimes() {
     return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  if (loading) return <div className="text-center p-4">Loading...</div>;
-  if (error) return <div className="text-center p-4" style={{ color: "red" }}>{error}</div>;
+  if (loading) return <LoadingSpinner />;
+  if (error)
+    return (
+      <div className="text-center p-4" style={{ color: "red" }}>
+        {error}
+      </div>
+    );
 
   return (
     <div className="showtimes-container">
@@ -187,14 +193,24 @@ export function MovieShowtimes() {
                               />
                             </div>
                             <div className="movie-details-small">
-                              <h3 className="movie-title-small">{movie.title}</h3>
-                              <p className="movie-rating-small">{movie.rating}</p>
+                              <h3 className="movie-title-small">
+                                {movie.title}
+                              </h3>
+                              <p className="movie-rating-small">
+                                {movie.rating}
+                              </p>
                             </div>
                           </div>
                           <div className="showtimes-list">
                             {relevantShowtimes.map((st) => (
-                              <Link key={st.id} to={`/showtimes/${st.id}/seats`}>
-                                <Button variant="outline" className="showtime-button">
+                              <Link
+                                key={st.id}
+                                to={`/showtimes/${st.id}/seats`}
+                              >
+                                <Button
+                                  variant="outline"
+                                  className="showtime-button"
+                                >
                                   <div>
                                     <div className="showtime-time">
                                       {formatTime(st.startTime)}

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/Button/Button";
-import { seatService } from "../services/api";
+import { Button } from "../../components/ui/Button/Button";
+import { seatService } from "../../services/api";
+import LoadingSpinner from "../../components/ui/LoadingSpinner/LoadingSpinner";
 import "./SeatPicker.css";
 
 export default function SeatPicker() {
@@ -48,7 +49,7 @@ export default function SeatPicker() {
   };
 
   if (loading) {
-    return <div className="text-center p-4">Loading seats...</div>;
+    return <LoadingSpinner />;
   }
   if (error) {
     return <div className="text-center p-4 text-red-600">{error}</div>;

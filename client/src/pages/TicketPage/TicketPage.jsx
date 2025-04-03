@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Button } from "../components/ui/Button/Button";
+import { Button } from "../../components/ui/Button/Button";
 import "./TicketPage.css"; // We'll create this CSS below
 
 export default function TicketPage() {
@@ -41,12 +41,24 @@ export default function TicketPage() {
           <p className="theater-name">{theaterName}</p>
         </div>
         <div className="ticket-info">
-          <p><strong>Booking ID:</strong> {bookingId}</p>
-          <p><strong>Ticket #:</strong> {ticketNumber}</p>
-          <p><strong>Seats:</strong> {bookedSeatIds?.join(", ")}</p>
-          <p><strong>Showtime ID:</strong> {showtimeId}</p>
-          <p><strong>Booked At:</strong> {bookingTime}</p>
-          <p><strong>Price:</strong> {price}</p>
+          <p>
+            <strong>Booking ID:</strong> {bookingId}
+          </p>
+          <p>
+            <strong>Ticket #:</strong> {ticketNumber}
+          </p>
+          <p>
+            <strong>Seats:</strong> {bookedSeatIds?.join(", ")}
+          </p>
+          <p>
+            <strong>Showtime ID:</strong> {showtimeId}
+          </p>
+          <p>
+            <strong>Booked At:</strong> {bookingTime}
+          </p>
+          <p>
+            <strong>Price:</strong> {price}
+          </p>
         </div>
         <div className="ticket-footer">
           <p>Enjoy the show! love u bb</p>

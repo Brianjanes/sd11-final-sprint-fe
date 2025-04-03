@@ -165,6 +165,7 @@
   max-width: var(--container-width);
   margin: 0 auto;
   padding: 2rem 1rem;
+  background-color: var(--background-color);
 }
 
 @media (min-width: 768px) {
@@ -223,19 +224,16 @@
 
 .featured-movies {
   margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .showtimes-section {
   max-width: var(--container-width);
   margin: 0 auto;
   padding: 2rem 1rem;
-  background-color: var(--muted-background);
-}
-
-@media (min-width: 768px) {
-  .showtimes-section {
-    padding: 3rem 1.5rem;
-  }
+  background-color: var(--background-color);
 }
 
 .section-header {
@@ -257,6 +255,7 @@
   max-width: var(--container-width);
   margin: 0 auto;
   padding: 2rem 1rem;
+  background-color: var(--background-color);
 }
 
 @media (min-width: 768px) {

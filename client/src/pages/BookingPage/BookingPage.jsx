@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { bookingService, showtimeService } from "../services/api";
-import { Button } from "../components/ui/Button/Button";
+import { bookingService, showtimeService } from "../../services/api";
+import { Button } from "../../components/ui/Button/Button";
+import LoadingSpinner from "../../components/ui/LoadingSpinner/LoadingSpinner";
+import "./BookingPage.css";
 
 export default function BookingPage() {
   const navigate = useNavigate();
@@ -77,32 +79,41 @@ export default function BookingPage() {
 
   if (error) {
     return (
-      <div className="p-4 text-center text-red-500">
+      <div className="error-message">
         <p>{error}</p>
       </div>
     );
   }
 
   if (!showtimeId || !selectedSeats) {
-    return <div className="p-4 text-center">Loading booking details...</div>;
+    return (
+      <div className="loading-spinner">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: "0 auto" }}>
-      <h2>Review Your Booking</h2>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "1rem",
-          marginBottom: "1rem",
-        }}
-      >
-        <p><strong>Movie:</strong> {movieTitle}</p>
-        <p><strong>Theater:</strong> {theaterName}</p>
-        <p><strong>Showtime ID:</strong> {showtimeId}</p>
-        <p><strong>Seats:</strong> {selectedSeats.join(", ")}</p>
-        <p><strong>Price:</strong> {price}</p>
+    <div className="booking-container">
+      <h2 className="booking-title">Review Your Booking</h2>
+      <div className="booking-details">
+        <p className="booking-detail-item">
+          <span className="booking-detail-label">Movie:</span> {movieTitle}
+        </p>
+        <p className="booking-detail-item">
+          <span className="booking-detail-label">Theater:</span> {theaterName}
+        </p>
+        <p className="booking-detail-item">
+          <span className="booking-detail-label">Showtime ID:</span>{" "}
+          {showtimeId}
+        </p>
+        <p className="booking-detail-item">
+          <span className="booking-detail-label">Seats:</span>{" "}
+          {selectedSeats.join(", ")}
+        </p>
+        <p className="booking-detail-item">
+          <span className="booking-detail-label">Price:</span> {price}
+        </p>
       </div>
       <Button onClick={handlePurchase} disabled={isSubmitting}>
         {isSubmitting ? "Purchasing..." : "Purchase"}

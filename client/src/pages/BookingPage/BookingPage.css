@@ -1,0 +1,36 @@
+.booking-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.booking-title {
+  margin-bottom: 1.5rem;
+}
+
+.booking-details {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.booking-detail-item {
+  margin-bottom: 0.5rem;
+}
+
+.booking-detail-label {
+  font-weight: bold;
+}
+
+.error-message {
+  padding: 1rem;
+  text-align: center;
+  color: red;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
