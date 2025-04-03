@@ -1,120 +1,127 @@
+// FILE: src/components/MovieCarousel/MovieCarousel.jsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Clock, Star } from "lucide-react";
 import { Button } from "../ui/Button/Button";
-import "./MovieCarousel.css";
 import { Link } from "react-router-dom";
-
-// Only include movies that exist in your DB (id 1 is Dune: Part Two)
-const featuredMovies = [
-  {
-    id: 1,
-    title: "Dune: Part Two",
-    description:
-      "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.",
-    image: "https://via.placeholder.com/1920x1080",
-    rating: "PG-13",
-    duration: "166 min",
-    stars: 4.8,
-    genre: ["Sci-Fi", "Adventure"],
-  },
-  {
-    id: 2,
-    title: "The Batman",
-    description:
-      "When a new threat emerges and threatens Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-    image: "https://via.placeholder.com/1920x1080",
-    rating: "PG-13",
-    duration: "176 min",
-    stars: 4.7,
-    genre: ["Action", "Crime", "Drama"],
-  },
-];
-
-// Fake available movie IDs from backend
-const moviesWithShowtimes = [1]; // Add more IDs if needed
+import { movieService } from "../../services/api";
+import "./MovieCarousel.css";
 
 export function MovieCarousel() {
+  const [slides, setSlides] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  // 1) fetch now-playing, then pick 2 for "featured"
+  useEffect(() => {
+    movieService
+      .getAllMovies()
+      .then((res) => {
+        const all = res.data;
+        const today = new Date();
+        const nowPlaying = all.filter(
+          (m) => new Date(m.releaseDate) <= today
+        );
+        // pick first 2 as "featured" 
+        const featured = nowPlaying.slice(0, 2);
+        setSlides(featured);
+      })
+      .catch((err) => console.error("Failed to fetch featured movies:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  // 2) auto-cycle the slides
+  useEffect(() => {
+    if (!slides.length) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [slides]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % featuredMovies.length);
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + featuredMovies.length) % featuredMovies.length);
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
-  useEffect(() => {
-    const interval = setInterval(nextSlide, 6000);
-    return () => clearInterval(interval);
-  }, []);
+  if (loading) return <div>Loading featured movies...</div>;
+  if (!slides.length) return <div>No featured movies found.</div>;
 
   return (
     <div className="carousel-container">
-      {featuredMovies.map((movie, index) => (
-        <div
-          key={movie.id}
-          className={`carousel-slide ${index === currentSlide ? "slide-active" : "slide-inactive"}`}
-        >
-          <div className="carousel-gradient" />
-          <img
-            src={movie.image || "/placeholder.svg"}
-            alt={movie.title}
-            className="carousel-image"
-          />
-          <div className="carousel-content">
-            <div className="carousel-info">
-              <div className="genre-tags">
-                {movie.genre.map((genre) => (
-                  <span key={genre} className="genre-tag">
-                    {genre}
-                  </span>
-                ))}
-              </div>
-              <h1 className="movie-headline">{movie.title}</h1>
-              <div className="movie-details">
-                <span className="movie-rating-badge">{movie.rating}</span>
-                <div className="movie-duration-container">
-                  <Clock className="duration-icon-large" />
-                  <span>{movie.duration}</span>
+      {slides.map((movie, index) => {
+        const isActive = index === currentSlide;
+        const duration = movie.durationMinutes
+          ? `${movie.durationMinutes} min`
+          : "N/A";
+        const rating = movie.rating || "NR";
+
+        return (
+          <div
+            key={movie.id}
+            className={`carousel-slide ${isActive ? "slide-active" : "slide-inactive"}`}
+          >
+            <div className="carousel-gradient" />
+            <img
+              src={movie.posterImageUrl || "/placeholder.svg"}
+              alt={movie.title}
+              className="carousel-image"
+            />
+            <div className="carousel-content">
+              <div className="carousel-info">
+                {/* If genre is comma-separated */}
+                <div className="genre-tags">
+                  {movie.genre?.split(",").map((g) => (
+                    <span key={g} className="genre-tag">
+                      {g.trim()}
+                    </span>
+                  ))}
                 </div>
-                <div className="movie-stars-container">
-                  <Star className="star-icon-large" />
-                  <span>{movie.stars}/5</span>
+                <h1 className="movie-headline">{movie.title}</h1>
+                <div className="movie-details">
+                  <span className="movie-rating-badge">{rating}</span>
+                  <div className="movie-duration-container">
+                    <Clock className="duration-icon-large" />
+                    <span>{duration}</span>
+                  </div>
+                  <div className="movie-stars-container">
+                    <Star className="star-icon-large" />
+                    <span>4.8/5</span> {/* or remove */}
+                  </div>
                 </div>
-              </div>
-              <p className="movie-description">{movie.description}</p>
-              <div className="carousel-actions">
-                {moviesWithShowtimes.includes(movie.id) ? (
+                <p className="movie-description">{movie.description}</p>
+                <div className="carousel-actions">
                   <Link to={`/movies/${movie.id}`}>
                     <Button size="lg">Get Tickets</Button>
                   </Link>
-                ) : (
-                  <Button size="lg" disabled>
-                    Not Available
-                  </Button>
-                )}
-                <Button size="lg" variant="outline">
-                  Watch Trailer
-                </Button>
+                  {movie.trailerUrl && (
+                    <Button size="lg" variant="outline">
+                      Watch Trailer
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
+
       <Button variant="ghost" className="carousel-prev-button" onClick={prevSlide}>
         <ChevronLeft className="carousel-arrow" />
       </Button>
       <Button variant="ghost" className="carousel-next-button" onClick={nextSlide}>
         <ChevronRight className="carousel-arrow" />
       </Button>
+
       <div className="carousel-indicators">
-        {featuredMovies.map((_, index) => (
+        {slides.map((_, i) => (
           <button
-            key={index}
-            className={`carousel-indicator ${index === currentSlide ? "indicator-active" : ""}`}
-            onClick={() => setCurrentSlide(index)}
+            key={i}
+            className={`carousel-indicator ${i === currentSlide ? "indicator-active" : ""}`}
+            onClick={() => setCurrentSlide(i)}
           />
         ))}
       </div>

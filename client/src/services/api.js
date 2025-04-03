@@ -27,7 +27,7 @@ export const movieService = {
   getAllMovies: () => api.get("/movies"),
   getMovieById: (id) => api.get(`/movies/${id}`),
   getNowShowingMovies: () => api.get("/movies/now-showing"),
-  getComingSoonMovies: () => api.get("/movies/coming-soon"),
+  getComingSoonMovies: () => api.get("/movies/upcoming"),
 };
 
 export const theaterService = {
@@ -36,17 +36,21 @@ export const theaterService = {
 };
 
 export const showtimeService = {
+  // GET all showtimes
+  getAllShowTimes: () => api.get("/showtimes"),
+  // GET showtimes for a specific date; dateString must be in YYYY-MM-DD format
+  getShowTimesByDate: (dateString) => api.get(`/showtimes/date/${dateString}`),
   getShowtimesByMovie: (movieId) => api.get(`/movies/${movieId}/showtimes`),
   getShowtimesByTheater: (theaterId) => api.get(`/theaters/${theaterId}/showtimes`),
+  // For seat picking
   getAvailableSeats: (showtimeId) => api.get(`/showtimes/${showtimeId}/seats`),
-
-  // NEW line: fetch a single showtime, returning movieTitle & theaterName, etc.
   getShowtimeById: (showtimeId) => api.get(`/showtimes/${showtimeId}`),
 };
 
 export const seatService = {
-  // GET /api/seats/showtime/{showtimeId}/available
-  getSeatsByShowtime: (showtimeId) => api.get(`/seats/showtime/${showtimeId}/available`),
+  // GET available seats for a given showtime
+  getSeatsByShowtime: (showtimeId) =>
+    api.get(`/seats/showtime/${showtimeId}/available`),
 };
 
 export const bookingService = {
