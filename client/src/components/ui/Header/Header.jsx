@@ -14,14 +14,6 @@ const Header = () => {
           </div>
           <div className="header-actions">
             <a href="#" className="header-link">
-              Sign In
-            </a>
-            <span className="divider">|</span>
-            <a href="#" className="header-link">
-              Join
-            </a>
-            <span className="divider">|</span>
-            <a href="#" className="header-link">
               SCENE+
             </a>
           </div>
@@ -39,9 +31,6 @@ const Header = () => {
             </Link>
             <Link to="/theatres" className="nav-link">
               Theatres
-            </Link>
-            <Link to="/food" className="nav-link">
-              Food & Drink
             </Link>
             <Link to="/events" className="nav-link">
               Events
