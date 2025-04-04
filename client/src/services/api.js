@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "http://localhost:8083/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -41,7 +41,8 @@ export const showtimeService = {
   // GET showtimes for a specific date; dateString must be in YYYY-MM-DD format
   getShowTimesByDate: (dateString) => api.get(`/showtimes/date/${dateString}`),
   getShowtimesByMovie: (movieId) => api.get(`/movies/${movieId}/showtimes`),
-  getShowtimesByTheater: (theaterId) => api.get(`/theaters/${theaterId}/showtimes`),
+  getShowtimesByTheater: (theaterId) =>
+    api.get(`/theaters/${theaterId}/showtimes`),
   // For seat picking
   getAvailableSeats: (showtimeId) => api.get(`/showtimes/${showtimeId}/seats`),
   getShowtimeById: (showtimeId) => api.get(`/showtimes/${showtimeId}`),
