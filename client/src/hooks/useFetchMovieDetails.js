@@ -3,76 +3,146 @@
 import { useState, useEffect } from "react";
 import { movieService, showtimeService } from "../services/api";
 
-export const useFetchMovieDetails = (movieId, selectedDate) => {
+const useFetchMovieDetails = (movieId, selectedDate) => {
   const [movie, setMovie] = useState(null);
   const [theaters, setTheaters] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Map screens to theaters (configuration mapping)
+  const screenToTheaterMap = {
+    1: {
+      id: "theater-1",
+      name: "Cineplex Avalon Mall",
+      address: "48 Kenmount Rd",
+    },
+    2: {
+      id: "theater-1",
+      name: "Cineplex Avalon Mall",
+      address: "48 Kenmount Rd",
+    },
+    3: {
+      id: "theater-1",
+      name: "Cineplex Avalon Mall",
+      address: "48 Kenmount Rd",
+    },
+    4: {
+      id: "theater-2",
+      name: "Cineplex Sobeys Square",
+      address: "35 Hebron Way",
+    },
+    5: {
+      id: "theater-2",
+      name: "Cineplex Sobeys Square",
+      address: "35 Hebron Way",
+    },
+    6: {
+      id: "theater-2",
+      name: "Cineplex Sobeys Square",
+      address: "35 Hebron Way",
+    },
+  };
 
   useEffect(() => {
     let isMounted = true;
-    setLoading(true);
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
 
-    const fetchMovieDetails = async () => {
       try {
         // Fetch movie details
-        const movieRes = await movieService.getMovieById(movieId);
-        if (isMounted) setMovie(movieRes.data);
+        const movieData = await movieService.getMovieById(movieId);
+        if (!isMounted) return;
 
-        // Fetch all showtimes and filter for this movie
-        const stRes = await showtimeService.getAllShowTimes();
-        const stData = stRes.data.filter(
-          (st) => st.movieId === parseInt(movieId)
+        if (!movieData) {
+          setError("Movie not found");
+          setIsLoading(false);
+          return;
+        }
+
+        setMovie(movieData);
+
+        // Fetch all showtimes
+        const allShowtimes = await showtimeService.getAllShowTimes();
+        if (!isMounted) return;
+
+        console.log("All showtimes:", allShowtimes);
+
+        // Filter showtimes for this movie
+        let movieShowtimes = allShowtimes.filter(
+          (showtime) => String(showtime.movieId) === String(movieId)
         );
 
-        // Filter by selectedDate (expects date as "YYYY-MM-DD")
-        const selectedDateString = selectedDate.toISOString().split("T")[0];
-        const filteredShowtimes = stData.filter(
-          (st) => st.date === selectedDateString
+        console.log("Movie showtimes before date filter:", movieShowtimes);
+
+        // Filter by selected date
+        movieShowtimes = movieShowtimes.filter(
+          (showtime) => showtime.date === selectedDate
         );
-        const showtimesToUse = filteredShowtimes.length
-          ? filteredShowtimes
-          : stData;
+
+        console.log("Movie showtimes after date filter:", movieShowtimes);
+
+        // If no showtimes for the selected date, use a fallback date for testing
+        if (movieShowtimes.length === 0 && selectedDate !== "2025-04-02") {
+          console.log("No showtimes for selected date, trying fallback date");
+          movieShowtimes = allShowtimes.filter(
+            (showtime) =>
+              String(showtime.movieId) === String(movieId) &&
+              showtime.date === "2025-04-02"
+          );
+        }
 
         // Group showtimes by theater
         const theaterMap = new Map();
-        showtimesToUse.forEach((st) => {
-          if (st.theaterName) {
-            if (!theaterMap.has(st.theaterName)) {
-              theaterMap.set(st.theaterName, {
-                name: st.theaterName,
-                address: st.theaterAddress || "Address not provided",
-                distance: "2.5 miles",
-                showtimes: [],
-              });
-            }
-            theaterMap.get(st.theaterName).showtimes.push({
-              id: st.id,
-              startTime: st.startTime,
-              screenType: st.screenType,
-              price: st.price,
+
+        movieShowtimes.forEach((showtime) => {
+          const screenId = showtime.screenId;
+          const theater = screenToTheaterMap[screenId];
+
+          if (!theater) {
+            console.warn(`No theater found for screenId: ${screenId}`);
+            return;
+          }
+
+          const theaterId = theater.id;
+
+          if (!theaterMap.has(theaterId)) {
+            theaterMap.set(theaterId, {
+              ...theater,
+              showtimes: [],
             });
           }
+
+          theaterMap.get(theaterId).showtimes.push(showtime);
         });
 
-        if (isMounted) setTheaters(Array.from(theaterMap.values()));
+        // Convert map to array and sort theaters alphabetically
+        const theatersArray = Array.from(theaterMap.values()).sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        console.log("Organized theaters:", theatersArray);
+        setTheaters(theatersArray);
       } catch (err) {
-        console.error("Failed to fetch movie details:", err);
-        if (isMounted)
+        if (isMounted) {
+          console.error("Error fetching movie details:", err);
           setError("Failed to load movie details. Please try again later.");
+        }
       } finally {
-        if (isMounted) setLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    if (movieId) {
-      fetchMovieDetails();
-    }
+    fetchData();
 
     return () => {
       isMounted = false;
     };
-  }, [movieId, selectedDate]);
+  }, [movieId, selectedDate]); // Re-fetch when movieId or selectedDate changes
 
-  return { movie, theaters, loading, error };
+  return { movie, theaters, isLoading, error };
 };
+
+export default useFetchMovieDetails;
