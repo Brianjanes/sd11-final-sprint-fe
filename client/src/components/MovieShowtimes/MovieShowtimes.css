@@ -94,13 +94,13 @@
 }
 
 .theater-tab:hover {
-  color: #ffffff;
+  color: #791515;
 }
 
 .theater-tab-active {
   border-bottom: 2px solid var(--primary-color);
   font-weight: 500;
-  color: #ffffff;
+  color: #bd0b0b;
 }
 
 .theater-content {
@@ -204,6 +204,7 @@
   gap: 0.5rem;
   align-items: center;
   margin-top: 0.5rem;
+  justify-content: flex-end;
 }
 
 @media (min-width: 768px) {
