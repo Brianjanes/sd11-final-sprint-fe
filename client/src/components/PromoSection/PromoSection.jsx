@@ -8,8 +8,9 @@ const promotions = [
   {
     id: 1,
     title: "Tuesday Discount",
-    description: "All movies just $8.99 every Tuesday for members",
-    image: "https://via.placeholder.com/800x450",
+    description:
+      "All movies just $5! Small Popcorn Just 5$! every Tuesday for members",
+    image: "/discount1.png",
     link: "/promotions/tuesday",
   },
   {
@@ -17,7 +18,7 @@ const promotions = [
     title: "Family Package",
     description:
       "2 adult tickets, 2 kids tickets, 2 popcorns & 2 drinks for $49.99",
-    image: "https://via.placeholder.com/800x450",
+    image: "/ad2.jpg",
     link: "/promotions/family",
   },
   {
@@ -25,7 +26,7 @@ const promotions = [
     title: "Premium Experience",
     description:
       "Upgrade to VIP seating with in-seat service for just $10 more",
-    image: "https://via.placeholder.com/800x450",
+    image: "/ad3.jpg",
     link: "/promotions/premium",
   },
 ];
