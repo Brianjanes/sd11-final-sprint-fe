@@ -6,7 +6,6 @@ on:
 permissions:  
   id-token: write
   contents: read
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -35,13 +34,9 @@ jobs:
           ls -la ${{ github.workspace }}/client
           echo "Build directory contents:"
           ls -la ${{ github.workspace }}/client/build || echo "Build directory not found"
-
-      - name: Debug Secrets
-        run: |
-          echo "AWS_ACCOUNT=${{ secrets.AWS_ACCOUNT }}"
-          echo "AWS_REGION=${{ secrets.AWS_REGION }}"
-          echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}"
-
+          echo "Build directory structure:"
+          find ${{ github.workspace }}/client/build -type f | sort
+      
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -53,4 +48,4 @@ jobs:
       
       - name: Upload to S3
         run: |
-          aws s3 sync "${{ github.workspace }}/client/build" "s3://${{ secrets.AWS_S3_BUCKET_NAME }}" --delete
+          aws s3 sync "${{ github.workspace }}/client/build/" "s3://${{ secrets.AWS_S3_BUCKET_NAME }}" --delete
