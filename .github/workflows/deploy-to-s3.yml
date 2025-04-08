@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-permissions:  
+permissions:
   id-token: write
   contents: read
 jobs:
@@ -24,6 +24,8 @@ jobs:
           npm install
       
       - name: Build frontend
+        env:
+          REACT_APP_API_BASE_URL: ${{ secrets.EC2_IP }}
         run: |
           cd client
           CI=false npm run build
