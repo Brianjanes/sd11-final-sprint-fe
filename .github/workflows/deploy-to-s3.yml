@@ -23,7 +23,7 @@ jobs:
           cd client
           npm install
       
-      - name: Build  frontend
+      - name: Build frontend
         env:
           REACT_APP_API_BASE_URL: ${{ secrets.EC2_IP }}
         run: |
