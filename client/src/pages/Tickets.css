@@ -1,0 +1,93 @@
+/* FILE: Tickets.css */
+
+/* Page Container */
+.tickets-page {
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background for better readability */
+    color: #333; /* Dark text for contrast */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Header Title */
+.tickets-page .title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #222; /* Slightly darker shade */
+}
+
+/* Showtime List Wrapper */
+.showtime-list {
+    display: flex;
+    flex-wrap: wrap; /* Ensure layout adjusts for different screen sizes */
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Showtime Buttons */
+.showtime-button {
+    background-color: #007bff; /* Primary button color */
+    color: #fff; /* Button text color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+}
+
+.showtime-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15); /* Enhance shadow on hover */
+}
+
+.showtime-button:focus {
+    outline: none;
+    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.6); /* Glow effect */
+}
+
+/* Error Message */
+.error {
+    color: red;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px;
+    background-color: #ffe6e6; /* Light red background for visibility */
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+/* Retry Button in Error State */
+.error button {
+    background-color: #dc3545; /* Red button for retry */
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.error button:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+.error button:focus {
+    outline: none;
+    box-shadow: 0px 0px 6px rgba(220, 53, 69, 0.6); /* Glow effect on focus */
+}
+
+/* Loading Spinner Container (Optional) */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 20px;
+    color: #333;
+}

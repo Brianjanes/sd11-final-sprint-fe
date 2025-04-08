@@ -176,7 +176,7 @@ export function MovieShowtimes() {
                   </div>
                   <div className="movies-list">
                     {movies.map((movie) => {
-                      // Here we filter by movie id and match theater by name
+                      // Here git powe filter by movie id and match theater by name
                       const relevantShowtimes = getShowtimesForMovieAndTheater(
                         movie.id,
                         theater.name

@@ -1,5 +1,3 @@
-// FILE: src/App.js
-
 import "./styles/App.css";
 import Header from "./components/ui/Header/Header";
 import Footer from "./components/ui/Footer/Footer";
@@ -24,46 +22,46 @@ import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <div className="App">
-          <Header />
-          <main>
-            <div className="container">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/movies/:id" element={<MovieDetailPage />} />
-                <Route
-                  path="/showtimes/:showtimeId/seats"
-                  element={<SeatPicker />}
-                />
-                {/* New Routes */}
-                <Route path="/movies" element={<Movies />} />
-                <Route path="/theatres" element={<Theatres />} />
-                <Route path="/events" element={<Events />} />
-                <Route path="/vip" element={<VIP />} />
-                <Route path="/imax" element={<IMAX />} />
-                <Route path="/tickets" element={<Tickets />} />
-                <Route path="/booking" element={<BookingPage />} />
-                <Route path="/ticket" element={<TicketPage />} />
-                {/* Admin (protected) */}
-                <Route
-                  path="/admin"
-                  element={
-                    <ProtectedRoute>
-                      <Admin />
-                    </ProtectedRoute>
-                  }
-                />
-              </Routes>
-            </div>
-          </main>
-          <Footer />
-        </div>
-      </AuthProvider>
-    </Router>
+      <Router>
+        <AuthProvider>
+          <div className="App">
+            <Header />
+            <main>
+              <div className="container">
+                <Routes>
+                  {/* Static Routes */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/tickets" element={<Tickets />} />
+                  <Route path="/movies" element={<Movies />} />
+                  <Route path="/theatres" element={<Theatres />} />
+                  <Route path="/events" element={<Events />} />
+                  <Route path="/vip" element={<VIP />} />
+                  <Route path="/imax" element={<IMAX />} />
+
+                  {/* Dynamic Routes */}
+                  <Route path="/movies/:id" element={<MovieDetailPage />} />
+                  <Route path="/seat-picker/:showtimeId" element={<SeatPicker />} />
+                  <Route path="/booking" element={<BookingPage />} />
+                  <Route path="/ticket" element={<TicketPage />} />
+
+                  {/* Admin (Protected Route) */}
+                  <Route
+                      path="/admin"
+                      element={
+                        <ProtectedRoute>
+                          <Admin />
+                        </ProtectedRoute>
+                      }
+                  />
+                </Routes>
+              </div>
+            </main>
+            <Footer />
+          </div>
+        </AuthProvider>
+      </Router>
   );
 }
 
