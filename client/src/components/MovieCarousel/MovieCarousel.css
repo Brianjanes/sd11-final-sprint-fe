@@ -1,62 +1,71 @@
 .carousel-container {
   position: relative;
   width: 100%;
-  height: 500px;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   margin-top: 32px;
 }
 
 @media (min-width: 768px) {
   .carousel-container {
-    height: 600px;
+    aspect-ratio: 21 / 9;
   }
 }
 
 .carousel-slide {
   position: absolute;
   inset: 0;
-  transition: opacity 1000ms;
-  background-color: #222222;
-  border: 1px solid #333333;
+  transition: opacity 1s ease;
+  background-color: #222;
 }
 
 .slide-active {
   opacity: 1;
+  z-index: 1;
 }
 
 .slide-inactive {
   opacity: 0;
   pointer-events: none;
+  z-index: 0;
 }
 
 .carousel-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, var(--background), transparent);
   z-index: 10;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.65) 10%,
+    rgba(0, 0, 0, 0.4) 35%,
+    transparent 75%
+  );
 }
 
 .carousel-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background-color: #222222;
+  background-color: #222;
 }
 
 .carousel-content {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 2rem;
+  left: 1rem;
+  right: 1rem;
   z-index: 20;
-  padding: 1.5rem;
-  max-width: var(--container-width);
   margin: 0 auto;
+  max-width: var(--container-width, 1200px);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 @media (min-width: 768px) {
   .carousel-content {
-    padding: 3rem;
+    bottom: 3rem;
+    left: 2rem;
+    right: 2rem;
   }
 }
 
@@ -66,15 +75,16 @@
 
 .genre-tags {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
 .genre-tag {
-  background-color: var(--secondary-color);
-  color: var(--secondary-foreground);
+  background-color: var(--secondary-color, #3b82f6);
+  color: var(--secondary-foreground, #fff);
   padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-md, 6px);
   font-size: 0.75rem;
 }
 
@@ -82,6 +92,7 @@
   font-size: 1.875rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  line-height: 1.2;
 }
 
 @media (min-width: 768px) {
@@ -99,10 +110,10 @@
 }
 
 .movie-rating-badge {
-  background-color: var(--primary-color);
-  color: var(--primary-foreground);
+  background-color: var(--primary-color, #f97316);
+  color: var(--primary-foreground, #fff);
   padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-md, 6px);
 }
 
 .movie-duration-container,
@@ -124,9 +135,9 @@
 }
 
 .movie-description {
-  color: var(--muted-foreground);
+  color: var(--muted-foreground, #ddd);
   margin-bottom: 1.5rem;
-  max-width: 28rem;
+  max-width: 32rem;
   display: none;
 }
 
@@ -150,12 +161,13 @@
   height: 3rem;
   width: 3rem;
   border-radius: 9999px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.35);
+  transition: background-color 0.2s ease;
 }
 
 .carousel-prev-button:hover,
 .carousel-next-button:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(0, 0, 0, 0.55);
 }
 
 .carousel-prev-button {
@@ -169,6 +181,7 @@
 .carousel-arrow {
   height: 1.5rem;
   width: 1.5rem;
+  color: #fff;
 }
 
 .carousel-indicators {
@@ -182,18 +195,23 @@
 }
 
 .carousel-indicator {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
   border-radius: 9999px;
-  background-color: rgba(59, 130, 246, 0.5);
+  background-color: rgba(255, 255, 255, 0.4);
   transition: all 0.2s;
   border: none;
   cursor: pointer;
 }
 
+.carousel-indicator:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
 .indicator-active {
-  width: 1.5rem;
-  background-color: var(--primary-color);
+  width: 1.75rem;
+  background-color: var(--primary-color, #f97316);
+  border-radius: 0.5rem;
 }
 
 .visually-hidden {
@@ -208,21 +226,11 @@
   border-width: 0;
 }
 
-/* Background image for empty slides */
 .carousel-slide::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    45deg,
-    #222222,
-    #222222 10px,
-    #333333 10px,
-    #333333 20px
-  );
-  opacity: 0.3;
+  inset: 0;
+  background: repeating-linear-gradient(45deg, #222 0 10px, #333 10px 20px);
+  opacity: 0.2;
   z-index: 0;
 }
